@@ -1,0 +1,96 @@
+<div class="bngApp changegroundgripangelo234" style="height: 100%;">
+	<table style="width: 100%;">
+		<tr>
+			<td>
+				Surface		
+			</td>
+			<td layout="row" layout-align="start center">
+			<div flex>
+				<md-select style="margin: 0px; color:black; background:white;" ng-model="surface_options.surface" ng-change="changedSelectedSurface()">
+					<md-option ng-value="opt.surface" ng-repeat="opt in surface_options.options">{{opt.txt}}</md-option>
+				</md-select>
+			</div>
+			<div flex></div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<md-select style="margin: 0px; color:black; background:white;" ng-model="parameter_options_arr[0].param" ng-change="changedSelectedParameter(0)">
+					<md-option ng-value="opt.param" ng-repeat="opt in parameter_options_arr[0].options">{{opt.txt}}</md-option>
+				</md-select>
+				<md-tooltip style="margin: 0px; background:white;">{{tooltip_arr[0]}}</md-tooltip>	
+			</td>
+			<td>	
+				<input max="{{parameter_minmaxinc_arr[0].max}}" min="{{parameter_minmaxinc_arr[0].min}}" step="{{parameter_minmaxinc_arr[0].inc}}" type="number" ng-model="input_arr[0]" ng-change="changedInput(0)">	
+				<md-tooltip style="margin: 0px; background:white;">Full range = ({{parameter_minmaxinc_arr[0].min}} ~ {{parameter_minmaxinc_arr[0].max}})</md-tooltip>		
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<md-select style="margin: 0px; color:black; background:white;" ng-model="parameter_options_arr[1].param" ng-change="changedSelectedParameter(1)">
+					<md-option ng-value="opt.param" ng-repeat="opt in parameter_options_arr[1].options">{{opt.txt}}</md-option>				
+				</md-select>
+				<md-tooltip style="margin: 0px; background:white;">{{tooltip_arr[1]}}</md-tooltip>
+			</td>
+			<td>
+				<input max="{{parameter_minmaxinc_arr[1].max}}" min="{{parameter_minmaxinc_arr[1].min}}" step="{{parameter_minmaxinc_arr[1].inc}}" type="number" ng-model="input_arr[1]" ng-change="changedInput(1)">
+				<md-tooltip style="margin: 0px; background:white;">Full range = ({{parameter_minmaxinc_arr[1].min}} ~ {{parameter_minmaxinc_arr[1].max}})</md-tooltip>			
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<md-select style="margin: 0px; color:black; background:white;" ng-model="parameter_options_arr[2].param" ng-change="changedSelectedParameter(2)">
+					<md-option ng-value="opt.param" ng-repeat="opt in parameter_options_arr[2].options">{{opt.txt}}</md-option>				
+				</md-select>
+				<md-tooltip style="margin: 0px; background:white;">{{tooltip_arr[2]}}</md-tooltip>
+			</td>
+			<td>
+				<input max="{{parameter_minmaxinc_arr[2].max}}" min="{{parameter_minmaxinc_arr[2].min}}" step="{{parameter_minmaxinc_arr[2].inc}}" type="number" ng-model="input_arr[2]" ng-change="changedInput(2)">
+				<md-tooltip style="margin: 0px; background:white;">Full range = ({{parameter_minmaxinc_arr[2].min}} ~ {{parameter_minmaxinc_arr[2].max}})</md-tooltip>	
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<md-select style="margin: 0px; color:black; background:white;" ng-model="parameter_options_arr[3].param" ng-change="changedSelectedParameter(3)">
+					<md-option ng-value="opt.param" ng-repeat="opt in parameter_options_arr[3].options">{{opt.txt}}</md-option>				
+				</md-select>
+				<md-tooltip style="margin: 0px; background:white;">{{tooltip_arr[3]}}</md-tooltip>
+			</td>
+			<td>
+				<input max="{{parameter_minmaxinc_arr[3].max}}" min="{{parameter_minmaxinc_arr[3].min}}" step="{{parameter_minmaxinc_arr[3].inc}}" type="number" ng-model="input_arr[3]" ng-change="changedInput(3)">
+				<md-tooltip style="margin: 0px; background:white;">Full range = ({{parameter_minmaxinc_arr[3].min}} ~ {{parameter_minmaxinc_arr[3].max}})</md-tooltip>	
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<md-button style="color: white; background-color: #ff6600" flex style="margin: 2px; min-width: 198px" md-no-ink class="md-raised"
+				ng-click="applyChanges()">Apply Changes
+				<md-tooltip>{{apply_button_enabled ? "Applies surface parameter values." : "CANNOT APPLY CHANGES SINCE THERE ARE DUPLICATE PARAMETERS SELECTED."}}</md-tooltip>
+				</md-button>
+			</td>
+
+			<td>
+				<md-button style="color: white; background-color: #ff6600" flex style="margin: 2px; min-width: 198px" md-no-ink class="md-raised"
+				ng-click="resetCurrentSurfaceGrip()">Reset to Default
+				<md-tooltip>Resets current surface to default settings.</md-tooltip>
+				</md-button>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<md-button style="color: white; background-color: #ff0000" flex style="margin: 2px; min-width: 198px" md-no-ink class="md-raised"
+				ng-click="resetAllGrip()">Reset All to Default
+				<md-tooltip>Resets all surfaces to default settings.</md-tooltip>
+				</md-button>
+			</td>
+
+			<!-- WIP for next update
+			<td>
+				Show All Surfaces 
+				<input type="checkbox" ng-model="showAllSurfaces" ng-change="changedShowAllSurfaces()">				
+			</td>
+			-->
+		</tr>
+	</table>
+</div>
