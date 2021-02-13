@@ -96,23 +96,41 @@ restrict: 'EA',
 link: function (scope, element, attrs) {
 	
 	//FUNCTIONS
-	
+
 	function init(){
 		// The current overlay screen the user is on (default: null)
 		scope.overlayScreen = null;	
-
+		scope.total_param_rows = 11;
+		scope.visible_param_rows = 1;
 		scope.showAllSurfaces = false;
 		scope.apply_button_enabled = true;
-		scope.input_arr = [0,0,0,0];
+		scope.input_arr = [0,0,0,0,0,0,0,0,0,0,0];
+		scope.show_param_modifier_rows = 
+		[true, false, false, false, false, false, false, false, false, false, false];
+		
 		scope.parameter_options_arr = [
 			{param: 'staticFrictionCoefficient', 	options: UI_TEXT.parameters},
 			{param: 'slidingFrictionCoefficient', 	options: UI_TEXT.parameters},
 			{param: 'hydrodynamicFriction', 		options: UI_TEXT.parameters},
-			{param: 'stribeckVelocity', 			options: UI_TEXT.parameters}
+			{param: 'stribeckVelocity', 			options: UI_TEXT.parameters},
+			{param: 'roughnessCoefficient', 		options: UI_TEXT.parameters},
+			{param: 'fluidDensity', 				options: UI_TEXT.parameters},
+			{param: 'flowConsistencyIndex', 		options: UI_TEXT.parameters},
+			{param: 'flowBehaviorIndex', 			options: UI_TEXT.parameters},
+			{param: 'dragAnisotropy', 				options: UI_TEXT.parameters},
+			{param: 'defaultDepth', 				options: UI_TEXT.parameters},
+			{param: 'skidMarks', 					options: UI_TEXT.parameters}
 		];
-		scope.tooltip_arr = [null, null, null, null];
+		scope.tooltip_arr = [null, null, null, null, null, null, null, null, null, null, null];
 
 		scope.parameter_minmaxinc_arr = [
+			{min: 0, max: 0, inc: 0},
+			{min: 0, max: 0, inc: 0},
+			{min: 0, max: 0, inc: 0},
+			{min: 0, max: 0, inc: 0},
+			{min: 0, max: 0, inc: 0},
+			{min: 0, max: 0, inc: 0},
+			{min: 0, max: 0, inc: 0},
 			{min: 0, max: 0, inc: 0},
 			{min: 0, max: 0, inc: 0},
 			{min: 0, max: 0, inc: 0},
@@ -120,7 +138,7 @@ link: function (scope, element, attrs) {
 		];
 
 		//Set scope.tooltip_arr with tooltips based on parameters selected
-		for(var i = 0; i < 4; i++){
+		for(var i = 0; i < scope.total_param_rows; i++){
 			var param_selection = scope.parameter_options_arr[i];
 			
 			for(var j = 0; j < UI_TEXT.parameter_tooltips.length; j++){
@@ -135,7 +153,7 @@ link: function (scope, element, attrs) {
 		}
 
 		//Set scope.parameter_minmaxinc_arr with min, max, and increment values, based on parameters selected
-		for(var i = 0; i < 4; i++){
+		for(var i = 0; i < scope.total_param_rows; i++){
 			var param_selection = scope.parameter_options_arr[i];
 			
 			for(var j = 0; j < UI_TEXT.parameter_minmaxinc.length; j++){
@@ -171,7 +189,7 @@ link: function (scope, element, attrs) {
 						}		
 					});
 				}
-				for(var i = 0; i < 4; i++){
+				for(var i = 0; i < scope.total_param_rows; i++){
 					updateSelectedParameter(i);
 				}
 			}	
@@ -183,6 +201,33 @@ link: function (scope, element, attrs) {
 			updateUIValues();
 		});	
 	}
+	
+	function showParamModifiers(height) {
+		var init_height = 170;
+		var row_height = 35;
+		
+		var table = document.getElementById("tableToModify");
+
+		//Initially, there are 4 rows (3 + 1 param_modifier row)
+		var row_count = table.rows.length;
+		var param_modifier_rows = row_count - 3
+
+		var num_of_param_modifier_to_show = Math.trunc((height - init_height) / row_height) + 1;
+
+		scope.visible_param_rows = num_of_param_modifier_to_show;
+
+		//Always show at least one
+		num_of_param_modifier_to_show = Math.max(Math.min(num_of_param_modifier_to_show, scope.total_param_rows), 1);
+
+		for(var i = 0; i < scope.total_param_rows; i++){
+			scope.show_param_modifier_rows[i] = false;
+		}
+
+		for(var i = 0; i < num_of_param_modifier_to_show; i++){
+			scope.show_param_modifier_rows[i] = true;
+		}
+	
+    }
 	
 	function setSurfaceParameter(index){
 		var surface = scope.surface_options.surface;
@@ -234,9 +279,35 @@ link: function (scope, element, attrs) {
 	function updateUIValues(){
 		//Set values to match current surface
 		
-		for(var i = 0; i < 4; i++){
+		for(var i = 0; i < scope.total_param_rows; i++){
 			updateUIValue(i);
 		}
+	}
+	
+	function checkForDuplicateSelectedParameters(){
+		var duplicate_found = false;
+		
+		for(var i = 0; i < scope.visible_param_rows; i++){
+			var compare = scope.parameter_options_arr[i].param;
+			
+			for(var j = 0; j < scope.visible_param_rows; j++){
+				if(i == j){
+					continue;
+				}
+				
+				var curr = scope.parameter_options_arr[j].param;
+				
+				if(curr == compare){
+					duplicate_found = true;
+					
+					i = 9999;
+					
+					break;
+				}
+			}
+		}
+		
+		scope.apply_button_enabled = !duplicate_found;
 	}
 
 	/* WIP for next update
@@ -260,43 +331,22 @@ link: function (scope, element, attrs) {
 		updateUIValue(index);	
 
 		//check if two or more selected parameters are same, which case disable apply button
+		//only account for parameters that are visible
 		
-		var duplicate_found = false;
-		
-		for(var i = 0; i < 4; i++){
-			var compare = scope.parameter_options_arr[i].param;
-			
-			for(var j = 0; j < 4; j++){
-				if(i == j){
-					continue;
-				}
-				
-				var curr = scope.parameter_options_arr[j].param;
-				
-				if(curr == compare){
-					duplicate_found = true;
-					
-					i = 9999;
-					
-					break;
-				}
-			}
-		}
-		
-		scope.apply_button_enabled = !duplicate_found;
+		checkForDuplicateSelectedParameters();
 
 		var param = scope.parameter_options_arr[index].param;
 
 		bngApi.engineLua('change_ground_grip_angelo234_setSelectedParameterUIValue('+ index + ',"' + param + '")');
 	};
 
-	scope.applyChanges = function () {
+	scope.applyChanges = function () {	
 		if(!scope.apply_button_enabled){
 			return;
 		}
 		
-		//Set values		
-		for(var i = 0; i < 4; i++){
+		//Set values only from visible rows	
+		for(var i = 0; i < scope.visible_param_rows; i++){
 			setSurfaceParameter(i);
 		}
 		
@@ -332,6 +382,15 @@ link: function (scope, element, attrs) {
 
 	// Make the needed streams available.
 	//StreamsManager.add(streamsList);
+
+	//When the app gets resized
+	scope.$on('app:resized', function (events, args){
+		var width = args.width;
+		var height = args.height;
+		
+		showParamModifiers(height);
+		checkForDuplicateSelectedParameters();
+	});
 
 	// Make sure we clean up after closing the app.
 	scope.$on('$destroy', function () {
