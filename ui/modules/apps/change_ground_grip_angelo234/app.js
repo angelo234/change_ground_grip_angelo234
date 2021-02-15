@@ -49,13 +49,13 @@ angular.module('beamng.apps')
 		{ param: 'staticFrictionCoefficient', 	txt: 'Static Friction (μ)'   			},
 		{ param: 'slidingFrictionCoefficient', 	txt: 'Sliding Friction (μ)'   			},
 		{ param: 'hydrodynamicFriction',		txt: 'Hydrodynamic Friction (μ)'		},
-		{ param: 'stribeckVelocity', 			txt: 'Stribeck Velocity (m/s)'   		},
+		{ param: 'stribeckVelocity', 			txt: 'Stribeck Velocity'   				},
 		{ param: 'roughnessCoefficient', 		txt: 'Roughness'   						},
-		{ param: 'fluidDensity', 				txt: 'Fluid Density (kg/m^3)'  			},
-		{ param: 'flowConsistencyIndex', 		txt: 'Flow Consistency Index (Pa*s^n)'	},
-		{ param: 'flowBehaviorIndex', 			txt: 'Flow Behavior Index (n)'  		},
+		{ param: 'fluidDensity', 				txt: 'Fluid Density'  					},
+		{ param: 'flowConsistencyIndex', 		txt: 'Flow Consistency Index'			},
+		{ param: 'flowBehaviorIndex', 			txt: 'Flow Behavior Index'  			},
 		{ param: 'dragAnisotropy', 				txt: 'Drag Anisotropy'  				},
-		{ param: 'defaultDepth', 				txt: 'Default Depth (m)'  				},
+		{ param: 'defaultDepth', 				txt: 'Default Depth'  					},
 		{ param: 'skidMarks', 					txt: 'Skid Marks'   					}	
 	],
 	
@@ -77,13 +77,13 @@ angular.module('beamng.apps')
 		{ param: 'staticFrictionCoefficient', 	txt: "Friction during normal driving and is usually higher than sliding friction. Typical range = (0.1 ~ 2)"															},
 		{ param: 'slidingFrictionCoefficient',	txt: "Friction when tires are spinning out or locked up and is usually lower than static friction. Typical range = (0.1 ~ 1.5)"											},
 		{ param: 'hydrodynamicFriction', 		txt: "Adds friction when sliding increases. Typical range = (0 ~ 0.1)"																									},
-		{ param: 'stribeckVelocity', 			txt: "How abrupt the change is from static to sliding friction. Smaller values = very abrupt change. Typical range = (0.2 ~ 10)"										},
+		{ param: 'stribeckVelocity', 			txt: "How abrupt the change is from static to sliding friction in m/s. Smaller values = very abrupt change. Typical range = (0.2 ~ 10)"									},
 		{ param: 'roughnessCoefficient', 		txt: "How well types of tire treads grip the surface. Low values are better for slicks. High values are better for mud tires. Range = (0 ~ 1)"							},
-		{ param: 'fluidDensity', 				txt: "Density of the 'surface' in kilograms per meter cubed. Larger values = More resistance"																			},
-		{ param: 'flowConsistencyIndex', 		txt: "Coefficient used to scale the whole visocity equation. Typical range = (0 ~ 5000)"																				},
+		{ param: 'fluidDensity', 				txt: "Density of the 'surface' in kg/m^3. Larger values = More resistance"																								},
+		{ param: 'flowConsistencyIndex', 		txt: "Coefficient used to scale the whole visocity equation in Pa*s^n. Typical range = (0 ~ 5000)"																		},
 		{ param: 'flowBehaviorIndex', 			txt: "Exponent (n) used in viscoity equation to define shape of curve. Pseudoplastic (n < 1), newtonian (n = 1), or a dilatant fluid (n > 1). Typical range = (0 ~ 1)"	},
 		{ param: 'dragAnisotropy', 				txt: "Creates a floating or sinking effect. Negative values = sinking effect. Positive values = floating effect. Typical range = (0 ~ 1)"								},
-		{ param: 'defaultDepth', 				txt: "The default depth in meters of the surface if the terrain is flat. Typical range = (0 ~ 0.15)"																	},
+		{ param: 'defaultDepth', 				txt: "The default depth in meters of the surface when the terrain is flat. Typical range = (0 ~ 0.15)"																	},
 		{ param: 'skidMarks',  					txt: 'To have or not to have skid marks. 0 = false and 1 = true.'																										}
 	]
 })
@@ -200,6 +200,15 @@ link: function (scope, element, attrs) {
 		bngApi.engineLua('change_ground_grip_angelo234_init()', function(data) {
 			updateUIValues();
 		});	
+		
+		onResizeEvent();
+	}
+	
+	function onResizeEvent(){
+		var height = element[0].offsetHeight;
+
+		showParamModifiers(height);
+		checkForDuplicateSelectedParameters();
 	}
 	
 	function showParamModifiers(height) {
@@ -214,10 +223,10 @@ link: function (scope, element, attrs) {
 
 		var num_of_param_modifier_to_show = Math.trunc((height - init_height) / row_height) + 1;
 
-		scope.visible_param_rows = num_of_param_modifier_to_show;
-
 		//Always show at least one
 		num_of_param_modifier_to_show = Math.max(Math.min(num_of_param_modifier_to_show, scope.total_param_rows), 1);
+
+		scope.visible_param_rows = num_of_param_modifier_to_show;
 
 		for(var i = 0; i < scope.total_param_rows; i++){
 			scope.show_param_modifier_rows[i] = false;
@@ -249,7 +258,6 @@ link: function (scope, element, attrs) {
 			var value = Math.round((data + Number.EPSILON) * 100) / 100;
 
 			scope.input_arr[index] = value;
-			//eval("scope." + param + " = value");
 		});		
 
 		//Update tooltip
@@ -263,6 +271,7 @@ link: function (scope, element, attrs) {
 			}
 		}	
 
+		//Update range of input values allowed
 		for(var j = 0; j < UI_TEXT.parameter_minmaxinc.length; j++){
 			var parameter_minmaxinc = UI_TEXT.parameter_minmaxinc[j];
 			
@@ -349,7 +358,7 @@ link: function (scope, element, attrs) {
 		for(var i = 0; i < scope.visible_param_rows; i++){
 			setSurfaceParameter(i);
 		}
-		
+
 		var surface = scope.surface_options.surface;
 		
 		//Apply changes
@@ -377,29 +386,16 @@ link: function (scope, element, attrs) {
 	init();
 
 
-	// An optional list of streams that will be used in the app
-	//var streamsList = [/* streams here */];
-
-	// Make the needed streams available.
-	//StreamsManager.add(streamsList);
-
 	//When the app gets resized
 	scope.$on('app:resized', function (events, args){
-		var width = args.width;
-		var height = args.height;
-		
-		showParamModifiers(height);
-		checkForDuplicateSelectedParameters();
+		onResizeEvent();
 	});
 
 	// Make sure we clean up after closing the app.
 	scope.$on('$destroy', function () {
-		//StreamsManager.remove(streamsList);
+		
 	});
 
-	scope.$on('streamsUpdate', function (event, streams) {
-	/* Some code that uses the streams' values */
-	});
 },
 };
 }]);
