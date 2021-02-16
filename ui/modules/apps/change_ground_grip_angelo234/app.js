@@ -22,7 +22,7 @@ angular.module('beamng.apps')
 		{ surface: 'ROCK', 				txt: 'Rock'      		},
 		{ surface: 'RUMBLE_STRIP', 		txt: 'Rumble Strip'  	},
 		{ surface: 'SAND', 				txt: 'Sand'         	},
-		{ surface: 'SLIPPERY', 			txt: 'Slippery'      	},
+		//{ surface: 'SLIPPERY', 			txt: 'Slippery'      	}, combined with asphalt_wet
 		{ surface: 'SNOW', 				txt: 'Snow'  			},
 		{ surface: 'WOOD', 				txt: 'Wood'         	}
 	],
@@ -169,8 +169,10 @@ link: function (scope, element, attrs) {
 			}
 		}
 
+		//when resetting UI but not map, use saved values from Lua
+
 		bngApi.engineLua('change_ground_grip_angelo234_getCurrentSurfaceUIValue()', function(data) {	
-			//when resetting UI but not map, use value from Lua
+			
 			if(data != null){
 				scope.surface_options = {surface: data, options: UI_TEXT.surfaces};	
 			}
@@ -203,13 +205,7 @@ link: function (scope, element, attrs) {
 		});	
 	}
 	
-	function onResizeEvent(){
-		var height = element[0].offsetHeight;
-
-		showParamModifiers(height);
-		checkForDuplicateSelectedParameters();
-	}
-	
+	//Display 'x' number of parameter modifiers based on height of app
 	function showParamModifiers(height) {
 		var init_height = 205;
 		var row_height = 35;
@@ -236,18 +232,21 @@ link: function (scope, element, attrs) {
 		}
     }
 	
+	//Apply parameter value
 	function setSurfaceParameter(index){
 		var surface = scope.surface_options.surface;
 		var param = scope.parameter_options_arr[index].param;
 		var value = scope.input_arr[index];	
-		
+			
 		if(param == "skidMarks"){
+			//Convert 0/1 into boolean value
 			value = value == 1;		
 		}
 
 		bngApi.engineLua('change_ground_grip_angelo234_setSurfaceParameter("' + surface + '","' + param +'",' + value + ')');	
 	}
 
+	//Update the UI values
 	function updateUIValue(index){
 		var surface = scope.surface_options.surface;
 		var param = scope.parameter_options_arr[index].param;			
@@ -285,6 +284,7 @@ link: function (scope, element, attrs) {
 		}
 	}
 	
+	//Update all UI values
 	function updateUIValues(){
 		//Set values to match current surface
 		
@@ -293,6 +293,8 @@ link: function (scope, element, attrs) {
 		}
 	}
 	
+	//Check if 2 or more of the same parameter is selected
+	//If 2 >= then disable setting the parameter values
 	function checkForDuplicateSelectedParameters(){
 		var duplicate_found = false;
 		
@@ -319,12 +321,15 @@ link: function (scope, element, attrs) {
 		scope.apply_button_enabled = !duplicate_found;
 	}
 
-	/* WIP for next update
-	scope.changedShowAllSurfaces = function(){
-		
-	};
-	*/
+	//Called when the app gets resized by user
+	function onResizeEvent(){
+		var height = element[0].offsetHeight;
+
+		showParamModifiers(height);
+		checkForDuplicateSelectedParameters();
+	}
 	
+	//When user wants to pick surface from world
 	scope.pickSurfaceFromWorld = function () {
 		bngApi.engineLua('change_ground_grip_angelo234_getGroundModelAtVehicle()', function(data) {
 			if(data != null){
@@ -344,6 +349,7 @@ link: function (scope, element, attrs) {
 		bngApi.engineLua('change_ground_grip_angelo234_setCurrentSurfaceUIValue("' + curr_surface + '")');
     };
 	
+	//When user selects a different parameter in UI
 	scope.changedSelectedParameter = function (index) {
 		updateUIValue(index);	
 
@@ -352,6 +358,7 @@ link: function (scope, element, attrs) {
 		bngApi.engineLua('change_ground_grip_angelo234_setSelectedParameterUIValue('+ index + ',"' + param + '")');
 	};
 
+	//Modify surface parameters from user values
 	scope.applyChanges = function () {	
 		if(!scope.apply_button_enabled){
 			return;
@@ -370,6 +377,7 @@ link: function (scope, element, attrs) {
 		updateUIValues();
     };
 
+	//Reset specific surfaces parameters to default settings
 	scope.resetCurrentSurfaceGrip = function () {
 		var surface = scope.surface_options.surface;
 		
@@ -378,6 +386,7 @@ link: function (scope, element, attrs) {
 		updateUIValues();
     };
 
+	//Reset all surfaces' parameters to default settings
 	scope.resetAllGrip = function () {
 		bngApi.engineLua('change_ground_grip_angelo234_resetAllSurfaces()');
 		
@@ -395,9 +404,7 @@ link: function (scope, element, attrs) {
 	});
 
 	// Make sure we clean up after closing the app.
-	scope.$on('$destroy', function () {
-		
-	});
+	scope.$on('$destroy', function () {});
 
 },
 };

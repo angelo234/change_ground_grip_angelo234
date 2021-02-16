@@ -120,14 +120,14 @@ function change_ground_grip_angelo234_init()
 	setDefaultParameters("ROCK")
 	setDefaultParameters("RUMBLE_STRIP")
 	setDefaultParameters("SAND")
-	setDefaultParameters("SLIPPERY")
+	--setDefaultParameters("SLIPPERY")
 	setDefaultParameters("SNOW")
 	setDefaultParameters("WOOD")
 	
 	--assign aliases
 	
 	default_surfaces["ASPHALT"]["aliases"] = {"groundmodel_asphalt1", "grid", "concrete", "concrete2"}
-	default_surfaces["ASPHALT_WET"]["aliases"] = {"asphalt_wet2", "asphalt_wet3"}	
+	default_surfaces["ASPHALT_WET"]["aliases"] = {"asphalt_wet2", "asphalt_wet3", "slippery"}	
 	default_surfaces["ASPHALT_OLD"]["aliases"] = {"groundmodel_asphalt_old"}
 	default_surfaces["ROCK"]["aliases"] = {"rock_cliff", "rocks_large"}
 	default_surfaces["WOOD"]["aliases"] = {"groundmodel_wood1", "groundmodel_wood2"}
