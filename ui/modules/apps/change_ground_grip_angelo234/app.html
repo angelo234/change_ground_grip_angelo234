@@ -1,19 +1,25 @@
 <div class="bngApp changegroundgripangelo234" style="height: 100%;">
+	<!-- <p style="font-size:20px">Road Grip Editor</p> -->
 	<table style="width: 100%;">
-		<tbody id="tableToModify">
+		<tbody id="tableToModify">		
 			<tr>
+				
 				<td>
-					Surface		
-				</td>
-				<td layout="row" layout-align="start center">
-				<div flex>
+				<h3>
 					<md-select style="margin: 0px; color:black; background:white;" ng-model="surface_options.surface" ng-change="changedSelectedSurface()">
 						<md-option ng-value="opt.surface" ng-repeat="opt in surface_options.options">{{opt.txt}}</md-option>
-					</md-select>
-				</div>
-				<div flex></div>
+					</md-select>		
+				</h3>	
 				</td>
-			<tr id="paramModifierRow0" ng-show="show_param_modifier_rows[0]">
+				
+				<td>
+					<md-button style="color: white; background-color: #90a4ae" flex style="margin: 2px; min-width: 198px" md-no-ink class="md-raised"
+					ng-click="pickSurfaceFromWorld()">Pick Surface
+					<md-tooltip>Select surface vehicle is on.</md-tooltip>
+					</md-button>	
+				</td>
+			</tr>
+			<tr id="paramModifierRow0" ng-show="show_param_modifier_rows[0]">		
 				<td>
 					<md-select style="margin: 0px; color:black; background:white;" ng-model="parameter_options_arr[0].param" ng-change="changedSelectedParameter(0)">
 						<md-option ng-value="opt.param" ng-repeat="opt in parameter_options_arr[0].options">{{opt.txt}}</md-option>

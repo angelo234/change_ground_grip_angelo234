@@ -199,9 +199,8 @@ link: function (scope, element, attrs) {
 		
 		bngApi.engineLua('change_ground_grip_angelo234_init()', function(data) {
 			updateUIValues();
+			onResizeEvent();
 		});	
-		
-		onResizeEvent();
 	}
 	
 	function onResizeEvent(){
@@ -212,7 +211,7 @@ link: function (scope, element, attrs) {
 	}
 	
 	function showParamModifiers(height) {
-		var init_height = 170;
+		var init_height = 205;
 		var row_height = 35;
 		
 		var table = document.getElementById("tableToModify");
@@ -235,7 +234,6 @@ link: function (scope, element, attrs) {
 		for(var i = 0; i < num_of_param_modifier_to_show; i++){
 			scope.show_param_modifier_rows[i] = true;
 		}
-	
     }
 	
 	function setSurfaceParameter(index){
@@ -258,6 +256,8 @@ link: function (scope, element, attrs) {
 			var value = Math.round((data + Number.EPSILON) * 100) / 100;
 
 			scope.input_arr[index] = value;
+			
+			checkForDuplicateSelectedParameters();
 		});		
 
 		//Update tooltip
@@ -324,6 +324,13 @@ link: function (scope, element, attrs) {
 		
 	};
 	*/
+	
+	scope.pickSurfaceFromWorld = function () {
+		bngApi.engineLua('change_ground_grip_angelo234_getGroundModelAtVehicle()', function(data) {
+			scope.surface_options.surface = data;	
+			scope.changedSelectedSurface();
+		});		
+    };
 
 	scope.changedInput = function (index){};
 
@@ -331,18 +338,12 @@ link: function (scope, element, attrs) {
 	scope.changedSelectedSurface = function () {
         updateUIValues();
 		
-		var curr_surface = scope.surface_options.surface;
-		
+		var curr_surface = scope.surface_options.surface;	
 		bngApi.engineLua('change_ground_grip_angelo234_setCurrentSurfaceUIValue("' + curr_surface + '")');
     };
 	
 	scope.changedSelectedParameter = function (index) {
 		updateUIValue(index);	
-
-		//check if two or more selected parameters are same, which case disable apply button
-		//only account for parameters that are visible
-		
-		checkForDuplicateSelectedParameters();
 
 		var param = scope.parameter_options_arr[index].param;
 

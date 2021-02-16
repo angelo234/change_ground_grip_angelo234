@@ -11,7 +11,53 @@ local surfaces = {}
 
 local new_map = true
 
+local waiting_for_mouseclick = false
+
+local imgui = ui_imgui
+
 local M = {}
+
+local function isSurfaceThisGroundModel(focusPos, gmName)
+	local col = ColorF(0, 0, 0, 0)
+	local drawn = debugDrawer:renderGroundModelDebug(0, gmName, col, 0.1, 0.1, focusPos:toPoint3F(), 0.1)
+
+	return drawn > 0
+end
+
+function change_ground_grip_angelo234_getGroundModelAtVehicle()
+	local debugtype = 0
+	
+	if be:getPlayerVehicle(0) then
+		local pos = vec3(be:getPlayerVehicle(0).obj:getPosition())
+
+		debugDrawer:drawSphere(pos:toPoint3F(), 0.03, ColorF(0,1,0,1))
+
+		for surface in pairs(default_surfaces) do
+			if surface ~= "ALL_SURFACES" then
+				
+				--Check each surface
+				local result = isSurfaceThisGroundModel(pos, surface)	
+					
+				if result then
+					return surface
+				end
+				
+				--Then check surface's aliases
+				if default_surfaces[surface]["aliases"] ~= nil then
+					for i, alias_surface in pairs(default_surfaces[surface]["aliases"]) do
+						local result_alias = isSurfaceThisGroundModel(pos, alias_surface)	
+					
+						if result_alias then
+							return surface
+						end
+					end 
+				end	
+			end
+		end  
+	end	
+	
+	return nil
+end
 
 local function setDefaultParameters(surface)
 	local value = {}
