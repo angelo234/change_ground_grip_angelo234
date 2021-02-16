@@ -327,8 +327,10 @@ link: function (scope, element, attrs) {
 	
 	scope.pickSurfaceFromWorld = function () {
 		bngApi.engineLua('change_ground_grip_angelo234_getGroundModelAtVehicle()', function(data) {
-			scope.surface_options.surface = data;	
-			scope.changedSelectedSurface();
+			if(data != null){
+				scope.surface_options.surface = data;	
+				scope.changedSelectedSurface();
+			}
 		});		
     };
 
