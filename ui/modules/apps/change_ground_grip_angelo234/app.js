@@ -97,6 +97,35 @@ link: function (scope, element, attrs) {
 	
 	//FUNCTIONS
 
+	//Test function and if it doesn't exist, tell user to reset Lua and restart map
+	function checkIfFuncExist(func){
+		bngApi.engineLua(func + ' == nil', function(data) {
+			if (data){
+				scope.lua_funcs_exist = false;
+				print("Global Lua function doesn't exist: " + func);
+			}	
+			
+			scope.lua_funcs_checks_counter++;
+		});
+	}
+	
+	//Check if all global Lua functions exist before initialization
+	function checkIfLuaFunctionsExist(){
+		checkIfFuncExist('change_ground_grip_angelo234_getGroundModelAtVehicle');
+		checkIfFuncExist('change_ground_grip_angelo234_init');
+		checkIfFuncExist('change_ground_grip_angelo234_getSurfaceParameter');	
+		checkIfFuncExist('change_ground_grip_angelo234_setSurfaceParameter');		
+		checkIfFuncExist('change_ground_grip_angelo234_getDefaultSurfaceParameter');
+		checkIfFuncExist('change_ground_grip_angelo234_getCurrentSurfaceUIValue');
+		checkIfFuncExist('change_ground_grip_angelo234_setCurrentSurfaceUIValue');
+		checkIfFuncExist('change_ground_grip_angelo234_isSelectedParameterUIValueSet');		
+		checkIfFuncExist('change_ground_grip_angelo234_applyChanges');
+		checkIfFuncExist('change_ground_grip_angelo234_resetSurface');
+		checkIfFuncExist('change_ground_grip_angelo234_resetAllSurfaces');
+		checkIfFuncExist('change_ground_grip_angelo234_getSelectedParameterUIValue');	
+		checkIfFuncExist('change_ground_grip_angelo234_setSelectedParameterUIValue');	
+	}
+
 	function init(){
 		// The current overlay screen the user is on (default: null)
 		scope.overlayScreen = null;	
@@ -170,7 +199,6 @@ link: function (scope, element, attrs) {
 		}
 
 		//when resetting UI but not map, use saved values from Lua
-
 		bngApi.engineLua('change_ground_grip_angelo234_getCurrentSurfaceUIValue()', function(data) {	
 			
 			if(data != null){
@@ -203,14 +231,16 @@ link: function (scope, element, attrs) {
 			updateUIValues();
 			onResizeEvent();
 		});	
+		
+		onResizeEvent();
 	}
-	
+
 	//Display 'x' number of parameter modifiers based on height of app
 	function showParamModifiers(height) {
 		var init_height = 205;
 		var row_height = 35;
 		
-		var table = document.getElementById("tableToModify");
+		var table = document.getElementById("tableBody");
 
 		//Initially, there are 4 rows (3 + 1 param_modifier row)
 		var row_count = table.rows.length;
@@ -394,14 +424,40 @@ link: function (scope, element, attrs) {
     };
 
 	//START
-
-	init();
-
+	scope.lua_funcs_exist = true;
+	scope.lua_funcs_checks_counter = 0;
+	scope.lua_num_funcs = 13;
+	scope.flag_checked_lua_funcs = false;
+	
+	//Check if all Lua functions exist
+	checkIfLuaFunctionsExist();
 
 	//When the app gets resized
 	scope.$on('app:resized', function (events, args){
 		onResizeEvent();
 	});
+	
+	scope.$on('streamsUpdate', function (event, streams) {
+		if(!scope.flag_checked_lua_funcs){
+			if(scope.lua_funcs_checks_counter == scope.lua_num_funcs){
+				//Not all Lua functions exist so tell user to do reseting procedure
+				if(!scope.lua_funcs_exist){
+					window.alert("Road Grip Editor app is not fully configured yet. Press Ctrl + L (restarts Lua) and restart the map to allow full functionality.");			
+				
+					var table = document.getElementById("tableBody");
+					
+					table.style.display = "none";
+					
+					document.getElementById("table").innerHTML = "<h2>App is not fully configured yet. Press Ctrl + L (restarts Lua) and restart the map to allow full functionality.</h2>";
+				}
+				else{
+					init();
+				}
+
+				scope.flag_checked_lua_funcs = true;
+			}	
+		}   
+    });
 
 	// Make sure we clean up after closing the app.
 	scope.$on('$destroy', function () {});
