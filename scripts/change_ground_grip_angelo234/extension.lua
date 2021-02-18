@@ -11,53 +11,9 @@ local surfaces = {}
 
 local new_map = true
 
-local waiting_for_mouseclick = false
-
 local imgui = ui_imgui
 
 local M = {}
-
-local function isSurfaceThisGroundModel(focusPos, gmName)
-	local col = ColorF(0, 0, 0, 0)
-	local drawn = debugDrawer:renderGroundModelDebug(0, gmName, col, 0.1, 0.1, focusPos:toPoint3F(), 0.1)
-
-	return drawn > 0
-end
-
-function change_ground_grip_angelo234_getGroundModelAtVehicle()
-	local debugtype = 0
-	
-	if be:getPlayerVehicle(0) then
-		local pos = vec3(be:getPlayerVehicle(0).obj:getPosition())
-
-		debugDrawer:drawSphere(pos:toPoint3F(), 0.03, ColorF(0,1,0,1))
-
-		for surface in pairs(default_surfaces) do
-			if surface ~= "ALL_SURFACES" then
-				
-				--Check each surface
-				local result = isSurfaceThisGroundModel(pos, surface)	
-					
-				if result then
-					return surface
-				end
-				
-				--Then check surface's aliases
-				if default_surfaces[surface]["aliases"] ~= nil then
-					for i, alias_surface in pairs(default_surfaces[surface]["aliases"]) do
-						local result_alias = isSurfaceThisGroundModel(pos, alias_surface)	
-					
-						if result_alias then
-							return surface
-						end
-					end 
-				end	
-			end
-		end  
-	end	
-	
-	return nil
-end
 
 local function setDefaultParameters(surface)
 	local value = {}
@@ -95,7 +51,7 @@ local function setDefaultParameters(surface)
 	default_surfaces[surface] = value
 end
 
-function change_ground_grip_angelo234_init()
+local function initValues()
 	--Only reset values if opening new map and not when restarting UI
 	if new_map == false then
 		return
@@ -141,7 +97,7 @@ function change_ground_grip_angelo234_init()
 	
 	for surface in pairs(default_surfaces) do
 		if surface == "ALL_SURFACES" then
-			surfaces[surface] = be:getGroundModel("ASPHALT").data		
+			surfaces[surface] = be:getGroundModel("ASPHALT").data
 		else
 			surfaces[surface] = be:getGroundModel(surface).data
 		end
@@ -153,11 +109,53 @@ function change_ground_grip_angelo234_init()
 	
 end
 
-function change_ground_grip_angelo234_getSurfaceParameter(surface, param)
+local function isSurfaceThisGroundModel(focusPos, gmName)
+	local col = ColorF(0, 0, 0, 0)
+	local drawn = debugDrawer:renderGroundModelDebug(0, gmName, col, 0.1, 0.1, focusPos:toPoint3F(), 0.1)
+
+	return drawn > 0
+end
+
+local function getGroundModelAtVehicle()
+	local debugtype = 0
+	
+	if be:getPlayerVehicle(0) then
+		local pos = vec3(be:getPlayerVehicle(0).obj:getPosition())
+
+		debugDrawer:drawSphere(pos:toPoint3F(), 0.03, ColorF(0,1,0,1))
+
+		for surface in pairs(default_surfaces) do
+			if surface ~= "ALL_SURFACES" then
+				
+				--Check each surface
+				local result = isSurfaceThisGroundModel(pos, surface)	
+					
+				if result then
+					return surface
+				end
+				
+				--Then check surface's aliases
+				if default_surfaces[surface]["aliases"] ~= nil then
+					for i, alias_surface in pairs(default_surfaces[surface]["aliases"]) do
+						local result_alias = isSurfaceThisGroundModel(pos, alias_surface)	
+					
+						if result_alias then
+							return surface
+						end
+					end 
+				end	
+			end
+		end  
+	end	
+	
+	return nil
+end
+
+local function getSurfaceParameter(surface, param)
 	return surfaces[surface][param]
 end
 
-function change_ground_grip_angelo234_setSurfaceParameter(surface, param, value)
+local function setSurfaceParameter(surface, param, value)
 	surfaces[surface][param] = value
 	
 	--If ALL_SURFACES, then set all surface as same param and value
@@ -170,11 +168,11 @@ function change_ground_grip_angelo234_setSurfaceParameter(surface, param, value)
 	end
 end
 
-function change_ground_grip_angelo234_getDefaultSurfaceParameter(surface, param)
+local function getDefaultSurfaceParameter(surface, param)
 	return default_surfaces[surface][param]
 end
 
-function change_ground_grip_angelo234_resetSurface(surface)
+local function resetSurface(surface)
 	for param, value in pairs(default_surfaces[surface]) do
 	
 		if param ~= "aliases" then
@@ -185,7 +183,7 @@ function change_ground_grip_angelo234_resetSurface(surface)
 	if surface == "ALL_SURFACES" then
 		for other_surface in pairs(surfaces) do
 			if other_surface ~= "ALL_SURFACES" then
-				change_ground_grip_angelo234_resetSurface(other_surface)
+				resetSurface(other_surface)
 			end	
 		end 
 	
@@ -202,16 +200,16 @@ function change_ground_grip_angelo234_resetSurface(surface)
 	end
 end
 
-function change_ground_grip_angelo234_resetAllSurfaces()
-	change_ground_grip_angelo234_resetSurface("ALL_SURFACES")
+local function resetAllSurfaces()
+	resetSurface("ALL_SURFACES")
 end
 
-function change_ground_grip_angelo234_applyChanges(surface)
+local function applyChanges(surface)
 	--If ALL_SURFACES is selcted, apply its groundmodel to all other surfaces
 	if surface == "ALL_SURFACES" then
 		for other_surface in pairs(surfaces) do
 			if other_surface ~= "ALL_SURFACES" then
-				change_ground_grip_angelo234_applyChanges(other_surface)
+				applyChanges(other_surface)
 			end	
 		end  
 		return
@@ -228,16 +226,16 @@ function change_ground_grip_angelo234_applyChanges(surface)
 	
 end
 
-function change_ground_grip_angelo234_getCurrentSurfaceUIValue()
+local function getCurrentSurfaceUIValue()
 	return selected_surface_UI_value
 end
 
 
-function change_ground_grip_angelo234_setCurrentSurfaceUIValue(surface)
+local function setCurrentSurfaceUIValue(surface)
 	selected_surface_UI_value = surface
 end
 
-function change_ground_grip_angelo234_isSelectedParameterUIValueSet()
+local function isSelectedParameterUIValueSet()
 	local count = 0
   	for _ in pairs(selected_parameter_UI_value_arr) do 
   		count = count + 1
@@ -246,12 +244,12 @@ function change_ground_grip_angelo234_isSelectedParameterUIValueSet()
   	return count > 0
 end
 
-function change_ground_grip_angelo234_getSelectedParameterUIValue(index)
+local function getSelectedParameterUIValue(index)
 	return selected_parameter_UI_value_arr[index]
 end
 
 
-function change_ground_grip_angelo234_setSelectedParameterUIValue(index, param)
+local function setSelectedParameterUIValue(index, param)
 	selected_parameter_UI_value_arr[index] = param
 end
 
@@ -265,5 +263,19 @@ end
 
 
 M.onClientPreStartMission = onClientPreStartMission
+
+M.initValues = initValues
+M.getGroundModelAtVehicle = getGroundModelAtVehicle
+M.getSurfaceParameter = getSurfaceParameter
+M.setSurfaceParameter = setSurfaceParameter
+M.getDefaultSurfaceParameter = getDefaultSurfaceParameter
+M.resetSurface = resetSurface
+M.resetAllSurfaces = resetAllSurfaces
+M.applyChanges = applyChanges
+M.getCurrentSurfaceUIValue = getCurrentSurfaceUIValue
+M.setCurrentSurfaceUIValue = setCurrentSurfaceUIValue
+M.isSelectedParameterUIValueSet = isSelectedParameterUIValueSet
+M.getSelectedParameterUIValue = getSelectedParameterUIValue
+M.setSelectedParameterUIValue = setSelectedParameterUIValue
 
 return M

@@ -97,38 +97,10 @@ link: function (scope, element, attrs) {
 	
 	//FUNCTIONS
 
-	//Test function and if it doesn't exist, tell user to reset Lua and restart map
-	function checkIfFuncExist(func){
-		bngApi.engineLua(func + ' == nil', function(data) {
-			if (data){
-				scope.lua_funcs_exist = false;
-				print("Global Lua function doesn't exist: " + func);
-			}	
-			
-			scope.lua_funcs_checks_counter++;
-		});
-	}
-	
-	//Check if all global Lua functions exist before initialization
-	function checkIfLuaFunctionsExist(){
-		checkIfFuncExist('change_ground_grip_angelo234_getGroundModelAtVehicle');
-		checkIfFuncExist('change_ground_grip_angelo234_init');
-		checkIfFuncExist('change_ground_grip_angelo234_getSurfaceParameter');	
-		checkIfFuncExist('change_ground_grip_angelo234_setSurfaceParameter');		
-		checkIfFuncExist('change_ground_grip_angelo234_getDefaultSurfaceParameter');
-		checkIfFuncExist('change_ground_grip_angelo234_getCurrentSurfaceUIValue');
-		checkIfFuncExist('change_ground_grip_angelo234_setCurrentSurfaceUIValue');
-		checkIfFuncExist('change_ground_grip_angelo234_isSelectedParameterUIValueSet');		
-		checkIfFuncExist('change_ground_grip_angelo234_applyChanges');
-		checkIfFuncExist('change_ground_grip_angelo234_resetSurface');
-		checkIfFuncExist('change_ground_grip_angelo234_resetAllSurfaces');
-		checkIfFuncExist('change_ground_grip_angelo234_getSelectedParameterUIValue');	
-		checkIfFuncExist('change_ground_grip_angelo234_setSelectedParameterUIValue');	
-	}
-
 	function init(){
 		// The current overlay screen the user is on (default: null)
 		scope.overlayScreen = null;	
+		scope.extension_name = 'scripts_change__ground__grip__angelo234_extension';
 		scope.total_param_rows = 11;
 		scope.visible_param_rows = 1;
 		scope.showAllSurfaces = false;
@@ -199,7 +171,7 @@ link: function (scope, element, attrs) {
 		}
 
 		//when resetting UI but not map, use saved values from Lua
-		bngApi.engineLua('change_ground_grip_angelo234_getCurrentSurfaceUIValue()', function(data) {	
+		bngApi.engineLua(scope.extension_name + '.getCurrentSurfaceUIValue()', function(data) {	
 			
 			if(data != null){
 				scope.surface_options = {surface: data, options: UI_TEXT.surfaces};	
@@ -209,10 +181,10 @@ link: function (scope, element, attrs) {
 			}	
 		});	
 
-		bngApi.engineLua('change_ground_grip_angelo234_isSelectedParameterUIValueSet()', function(data) {	
+		bngApi.engineLua(scope.extension_name + '.isSelectedParameterUIValueSet()', function(data) {	
 			if(data){
 				function updateSelectedParameter(index){
-					bngApi.engineLua('change_ground_grip_angelo234_getSelectedParameterUIValue(' + index + ')', function(data2) {
+					bngApi.engineLua(scope.extension_name + '.getSelectedParameterUIValue(' + index + ')', function(data2) {
 						if(data2 != null){
 							scope.parameter_options_arr[index].param = data2;
 							updateUIValue(index);
@@ -227,7 +199,7 @@ link: function (scope, element, attrs) {
 
 		//Store default data in memory and update values 
 		
-		bngApi.engineLua('change_ground_grip_angelo234_init()', function(data) {
+		bngApi.engineLua(scope.extension_name + '.initValues()', function(data) {
 			updateUIValues();
 			onResizeEvent();
 		});	
@@ -273,7 +245,7 @@ link: function (scope, element, attrs) {
 			value = value == 1;		
 		}
 
-		bngApi.engineLua('change_ground_grip_angelo234_setSurfaceParameter("' + surface + '","' + param +'",' + value + ')');	
+		bngApi.engineLua(scope.extension_name + '.setSurfaceParameter("' + surface + '","' + param +'",' + value + ')');	
 	}
 
 	//Update the UI values
@@ -281,7 +253,7 @@ link: function (scope, element, attrs) {
 		var surface = scope.surface_options.surface;
 		var param = scope.parameter_options_arr[index].param;			
 		
-		bngApi.engineLua('change_ground_grip_angelo234_getSurfaceParameter("' + surface + '","' + param +'")', function(data) {
+		bngApi.engineLua(scope.extension_name + '.getSurfaceParameter("' + surface + '","' + param +'")', function(data) {
 			var value = Math.round((data + Number.EPSILON) * 100) / 100;
 
 			scope.input_arr[index] = value;
@@ -361,7 +333,7 @@ link: function (scope, element, attrs) {
 	
 	//When user wants to pick surface from world
 	scope.pickSurfaceFromWorld = function () {
-		bngApi.engineLua('change_ground_grip_angelo234_getGroundModelAtVehicle()', function(data) {
+		bngApi.engineLua(scope.extension_name + '.getGroundModelAtVehicle()', function(data) {
 			if(data != null){
 				scope.surface_options.surface = data;	
 				scope.changedSelectedSurface();
@@ -376,7 +348,7 @@ link: function (scope, element, attrs) {
         updateUIValues();
 		
 		var curr_surface = scope.surface_options.surface;	
-		bngApi.engineLua('change_ground_grip_angelo234_setCurrentSurfaceUIValue("' + curr_surface + '")');
+		bngApi.engineLua(scope.extension_name + '.setCurrentSurfaceUIValue("' + curr_surface + '")');
     };
 	
 	//When user selects a different parameter in UI
@@ -385,7 +357,7 @@ link: function (scope, element, attrs) {
 
 		var param = scope.parameter_options_arr[index].param;
 
-		bngApi.engineLua('change_ground_grip_angelo234_setSelectedParameterUIValue('+ index + ',"' + param + '")');
+		bngApi.engineLua(scope.extension_name + '.setSelectedParameterUIValue('+ index + ',"' + param + '")');
 	};
 
 	//Modify surface parameters from user values
@@ -402,7 +374,7 @@ link: function (scope, element, attrs) {
 		var surface = scope.surface_options.surface;
 		
 		//Apply changes
-		bngApi.engineLua('change_ground_grip_angelo234_applyChanges("' + surface + '")');
+		bngApi.engineLua(scope.extension_name + '.applyChanges("' + surface + '")');
 		
 		updateUIValues();
     };
@@ -411,53 +383,25 @@ link: function (scope, element, attrs) {
 	scope.resetCurrentSurfaceGrip = function () {
 		var surface = scope.surface_options.surface;
 		
-        bngApi.engineLua('change_ground_grip_angelo234_resetSurface("' + surface + '")');
+        bngApi.engineLua(scope.extension_name + '.resetSurface("' + surface + '")');
 
 		updateUIValues();
     };
 
 	//Reset all surfaces' parameters to default settings
 	scope.resetAllGrip = function () {
-		bngApi.engineLua('change_ground_grip_angelo234_resetAllSurfaces()');
+		bngApi.engineLua(scope.extension_name + '.resetAllSurfaces()');
 		
 		updateUIValues();
     };
 
 	//START
-	scope.lua_funcs_exist = true;
-	scope.lua_funcs_checks_counter = 0;
-	scope.lua_num_funcs = 13;
-	scope.flag_checked_lua_funcs = false;
-	
-	//Check if all Lua functions exist
-	checkIfLuaFunctionsExist();
+	init();
 
 	//When the app gets resized
 	scope.$on('app:resized', function (events, args){
 		onResizeEvent();
 	});
-	
-	scope.$on('streamsUpdate', function (event, streams) {
-		if(!scope.flag_checked_lua_funcs){
-			if(scope.lua_funcs_checks_counter == scope.lua_num_funcs){
-				//Not all Lua functions exist so tell user to do reseting procedure
-				if(!scope.lua_funcs_exist){
-					window.alert("Road Grip Editor app is not fully configured yet. Press Ctrl + L (restarts Lua) and restart the map to allow full functionality.");			
-				
-					var table = document.getElementById("tableBody");
-					
-					table.style.display = "none";
-					
-					document.getElementById("table").innerHTML = "<h2>App is not fully configured yet. Press Ctrl + L (restarts Lua) and restart the map to allow full functionality.</h2>";
-				}
-				else{
-					init();
-				}
-
-				scope.flag_checked_lua_funcs = true;
-			}	
-		}   
-    });
 
 	// Make sure we clean up after closing the app.
 	scope.$on('$destroy', function () {});
