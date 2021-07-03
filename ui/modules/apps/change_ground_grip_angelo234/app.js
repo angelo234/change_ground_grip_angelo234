@@ -88,9 +88,9 @@ angular.module('beamng.apps')
 	]
 })
 
-.directive('changeGroundGripAngelo234', ['UI_TEXT', 'bngApi', function (UI_TEXT, bngApi) {
+.directive('changeGroundGripAngelo234', ['UI_TEXT', function (UI_TEXT) {
 return {
-templateUrl: 'modules/apps/change_ground_grip_angelo234/app.html',
+templateUrl: '/ui/modules/apps/change_ground_grip_angelo234/app.html',
 replace: true,
 restrict: 'EA',
 link: function (scope, element, attrs) {
