@@ -32,7 +32,7 @@ angular.module('beamng.apps')
 		{ surface: 'ALL_SURFACES',  	txt: 'All Surfaces'		},
 		{ surface: 'ASPHALT', 			txt: 'Asphalt'      	}, //Modifies ASPHALT_OLD, ASPHALT_PREPPED, RUMBLE_STRIP
 		{ surface: 'ASPHALT_WET', 		txt: 'Asphalt Wet'      }, //Modifies ASPHALT_WET, SLIPPERY
-		{ surface: 'COBBLESTONE', 		txt: 'Cobblestone'  	}, 
+		{ surface: 'COBBLESTONE', 		txt: 'Cobblestone'  	},
 		{ surface: 'DIRT',  			txt: 'Dirt/Grass/Gravel'}, //Modifies GRASS, DIRT_DUSTY, DIRT_DUSTY_LOOSE, GRAVEL
 		{ surface: 'ICE', 				txt: 'Ice'  			},
 		{ surface: 'METAL', 			txt: 'Metal'         	}, //Modifies METAL_TREAD
@@ -45,47 +45,63 @@ angular.module('beamng.apps')
 	],
 	*/
 
-	parameters: [
-		{ param: 'staticFrictionCoefficient', 	txt: 'Static Friction (μ)'   			},
-		{ param: 'slidingFrictionCoefficient', 	txt: 'Sliding Friction (μ)'   			},
-		{ param: 'hydrodynamicFriction',		txt: 'Hydrodynamic Friction (μ)'		},
-		{ param: 'stribeckVelocity', 			txt: 'Stribeck Velocity'   				},
-		{ param: 'roughnessCoefficient', 		txt: 'Roughness'   						},
-		{ param: 'fluidDensity', 				txt: 'Fluid Density'  					},
-		{ param: 'flowConsistencyIndex', 		txt: 'Flow Consistency Index'			},
-		{ param: 'flowBehaviorIndex', 			txt: 'Flow Behavior Index'  			},
-		{ param: 'dragAnisotropy', 				txt: 'Drag Anisotropy'  				},
-		{ param: 'defaultDepth', 				txt: 'Default Depth'  					},
-		{ param: 'skidMarks', 					txt: 'Skid Marks'   					}	
-	],
-	
-	parameter_minmaxinc: [
-		{ param: 'staticFrictionCoefficient', 	min: -100, 		max: 50,		inc: 0.01  	},
-		{ param: 'slidingFrictionCoefficient', 	min: -10, 		max: 50,   		inc: 0.01	},
-		{ param: 'hydrodynamicFriction',		min: -1, 		max: 50, 		inc: 0.01	},
-		{ param: 'stribeckVelocity', 			min: -100, 		max: 100, 		inc: 0.01	},
-		{ param: 'roughnessCoefficient', 		min: 0, 		max: 1, 		inc: 0.01	},
-		{ param: 'fluidDensity', 				min: -1000000, 	max: 1000000,  	inc: 0.1	},
-		{ param: 'flowConsistencyIndex', 		min: -1000000, 	max: 1000000,	inc: 0.1	},
-		{ param: 'flowBehaviorIndex', 			min: -100, 		max: 100,  		inc: 0.01	},
-		{ param: 'dragAnisotropy', 				min: -1000000, 	max: 1000000,  	inc: 0.01	},
-		{ param: 'defaultDepth', 				min: -100, 		max: 100,  		inc: 0.01	},
-		{ param: 'skidMarks', 					min: 0, 		max: 1,  		inc: 1		},
-	],
-
-	parameter_tooltips: [
-		{ param: 'staticFrictionCoefficient', 	txt: "Friction during normal driving and is usually higher than sliding friction. Typical range = (0.1 ~ 2)"															},
-		{ param: 'slidingFrictionCoefficient',	txt: "Friction when tires are spinning out or locked up and is usually lower than static friction. Typical range = (0.1 ~ 1.5)"											},
-		{ param: 'hydrodynamicFriction', 		txt: "Adds friction when sliding increases. Typical range = (0 ~ 0.1)"																									},
-		{ param: 'stribeckVelocity', 			txt: "How abrupt the change is from static to sliding friction in m/s. Smaller values = very abrupt change. Typical range = (0.2 ~ 10)"									},
-		{ param: 'roughnessCoefficient', 		txt: "How well types of tire treads grip the surface. Low values are better for slicks. High values are better for mud tires. Range = (0 ~ 1)"							},
-		{ param: 'fluidDensity', 				txt: "Density of the 'surface' in kg/m^3. Larger values = More resistance"																								},
-		{ param: 'flowConsistencyIndex', 		txt: "Coefficient used to scale the whole visocity equation in Pa*s^n. Typical range = (0 ~ 5000)"																		},
-		{ param: 'flowBehaviorIndex', 			txt: "Exponent (n) used in viscoity equation to define shape of curve. Pseudoplastic (n < 1), newtonian (n = 1), or a dilatant fluid (n > 1). Typical range = (0 ~ 1)"	},
-		{ param: 'dragAnisotropy', 				txt: "Creates a floating or sinking effect. Negative values = sinking effect. Positive values = floating effect. Typical range = (0 ~ 1)"								},
-		{ param: 'defaultDepth', 				txt: "The default depth in meters of the surface when the terrain is flat. Typical range = (0 ~ 0.15)"																	},
-		{ param: 'skidMarks',  					txt: 'To have or not to have skid marks. 0 = false and 1 = true.'																										}
-	]
+	parameters: {
+		staticFrictionCoefficient: {
+			name: 'Static Friction (μ)',
+			tooltip: "Friction during normal driving and is usually higher than sliding friction. Typical range = (0.1 ~ 2)",
+			min: -100, max: 50, inc: 0.01, val: 0.0
+		},
+		slidingFrictionCoefficient:	{
+			name: 'Sliding Friction (μ)',
+			tooltip: "Friction when tires are spinning out or locked up and is usually lower than static friction. Typical range = (0.1 ~ 1.5)",
+			min: -10, max: 50, inc: 0.01, val: 0.0
+		},
+		hydrodynamicFriction:	{
+			name: 'Hydrodynamic Friction (μ)',
+			tooltip: "Adds friction when sliding increases. Typical range = (0 ~ 0.1)",
+			min: -1, max: 50,	inc: 0.01, val: 0.0
+		},
+		stribeckVelocity:	{
+			name: 'Stribeck Velocity',
+			tooltip: "How abrupt the change is from static to sliding friction in m/s. Smaller values = very abrupt change. Typical range = (0.2 ~ 10)",
+			min: -100, max: 100, inc: 0.01, val: 0.0
+		},
+		roughnessCoefficient:	{
+			name: 'Roughness',
+			tooltip: "How well types of tire treads grip the surface. Low values are better for slicks. High values are better for mud tires. Range = (0 ~ 1)",
+			min: 0, max: 1,	inc: 0.01, val: 0.0
+		},
+		fluidDensity: {
+			name: 'Fluid Density',
+			tooltip: "Density of the 'surface' in kg/m^3. Larger values = More resistance",
+			min: -1000000, max: 1000000, inc: 0.1, val: 0.0
+		},
+		flowConsistencyIndex:	{
+			name: 'Flow Consistency Index',
+			tooltip: "Coefficient used to scale the whole visocity equation in Pa*s^n. Typical range = (0 ~ 5000)",
+			min: -1000000, max: 1000000, inc: 0.1, val: 0.0
+		},
+		flowBehaviorIndex:	{
+			name: 'Flow Behavior Index',
+			tooltip: "Exponent (n) used in viscoity equation to define shape of curve. Pseudoplastic (n < 1), newtonian (n = 1), or a dilatant fluid (n > 1). Typical range = (0 ~ 1)",
+			min: -100, max: 100, inc: 0.01, val: 0.0
+		},
+		dragAnisotropy:	{
+			name: 'Drag Anisotropy',
+			tooltip: "Creates a floating or sinking effect. Negative values = sinking effect. Positive values = floating effect. Typical range = (0 ~ 1)",
+			min: -1000000, max: 1000000, inc: 0.01, val: 0.0
+		},
+		defaultDepth:	{
+			name: 'Default Depth',
+			tooltip: "The default depth in meters of the surface when the terrain is flat. Typical range = (0 ~ 0.15)",
+			min: -100, max: 100,	inc: 0.01, val: 0.0
+		},
+		skidMarks: {
+			name: 'Skid Marks',
+			tooltip: 'To have or not to have skid marks. 0 = false and 1 = true.',
+			min: 0, max: 1,	inc: 1, val: 0
+		}
+	}
 })
 
 .directive('changeGroundGripAngelo234', ['UI_TEXT', function (UI_TEXT) {
@@ -94,21 +110,38 @@ templateUrl: '/ui/modules/apps/change_ground_grip_angelo234/app.html',
 replace: true,
 restrict: 'EA',
 link: function (scope, element, attrs) {
-	
+
 	//FUNCTIONS
 
 	function init(){
 		// The current overlay screen the user is on (default: null)
-		scope.overlayScreen = null;	
+		scope.overlayScreen = null;
 		scope.extension_name = 'scripts_change__ground__grip__angelo234_extension';
 		scope.total_param_rows = 11;
 		scope.visible_param_rows = 1;
 		scope.showAllSurfaces = false;
 		scope.apply_button_enabled = true;
 		scope.input_arr = [0,0,0,0,0,0,0,0,0,0,0];
-		scope.show_param_modifier_rows = 
+		scope.show_param_modifier_rows =
 		[true, false, false, false, false, false, false, false, false, false, false];
-		
+
+		scope.parameters = UI_TEXT.parameters;
+
+		/*
+		scope.paramters = [
+			'staticFrictionCoefficient',
+			'slidingFrictionCoefficient',
+			'hydrodynamicFriction',
+			'stribeckVelocity',
+			'roughnessCoefficient',
+			'fluidDensity',
+			'flowConsistencyIndex',
+			'flowBehaviorIndex',
+			'dragAnisotropy',
+			'defaultDepth',
+			'skidMarks',
+		]
+		*/
 		scope.parameter_options_arr = [
 			{param: 'staticFrictionCoefficient', 	options: UI_TEXT.parameters},
 			{param: 'slidingFrictionCoefficient', 	options: UI_TEXT.parameters},
@@ -122,6 +155,8 @@ link: function (scope, element, attrs) {
 			{param: 'defaultDepth', 				options: UI_TEXT.parameters},
 			{param: 'skidMarks', 					options: UI_TEXT.parameters}
 		];
+
+
 		scope.tooltip_arr = [null, null, null, null, null, null, null, null, null, null, null];
 
 		scope.parameter_minmaxinc_arr = [
@@ -138,72 +173,40 @@ link: function (scope, element, attrs) {
 			{min: 0, max: 0, inc: 0}
 		];
 
-		//Set scope.tooltip_arr with tooltips based on parameters selected
-		for(var i = 0; i < scope.total_param_rows; i++){
-			var param_selection = scope.parameter_options_arr[i];
-			
-			for(var j = 0; j < UI_TEXT.parameter_tooltips.length; j++){
-				var tooltip = UI_TEXT.parameter_tooltips[j];
-				
-				if(param_selection.param == tooltip.param){
-					scope.tooltip_arr[i] = tooltip.txt;
-
-					break;
-				}
-			}
-		}
-
-		//Set scope.parameter_minmaxinc_arr with min, max, and increment values, based on parameters selected
-		for(var i = 0; i < scope.total_param_rows; i++){
-			var param_selection = scope.parameter_options_arr[i];
-			
-			for(var j = 0; j < UI_TEXT.parameter_minmaxinc.length; j++){
-				var parameter_minmaxinc = UI_TEXT.parameter_minmaxinc[j];
-				
-				if(param_selection.param == parameter_minmaxinc.param){
-					scope.parameter_minmaxinc_arr[i].min = parameter_minmaxinc.min;
-					scope.parameter_minmaxinc_arr[i].max = parameter_minmaxinc.max;
-					scope.parameter_minmaxinc_arr[i].inc = parameter_minmaxinc.inc;
-
-					break;
-				}
-			}
-		}
-
 		//when resetting UI but not map, use saved values from Lua
-		bngApi.engineLua(scope.extension_name + '.getCurrentSurfaceUIValue()', function(data) {	
-			
+		bngApi.engineLua(scope.extension_name + '.getCurrentSurfaceUIValue()', function(data) {
+
 			if(data != null){
-				scope.surface_options = {surface: data, options: UI_TEXT.surfaces};	
+				scope.surface_options = {surface: data, options: UI_TEXT.surfaces};
 			}
 			else{
 				scope.surface_options = {surface: 'ALL_SURFACES', options: UI_TEXT.surfaces};
-			}	
-		});	
+			}
+		});
 
-		bngApi.engineLua(scope.extension_name + '.isSelectedParameterUIValueSet()', function(data) {	
+		bngApi.engineLua(scope.extension_name + '.isSelectedParameterUIValueSet()', function(data) {
 			if(data){
 				function updateSelectedParameter(index){
 					bngApi.engineLua(scope.extension_name + '.getSelectedParameterUIValue(' + index + ')', function(data2) {
 						if(data2 != null){
 							scope.parameter_options_arr[index].param = data2;
 							updateUIValue(index);
-						}		
+						}
 					});
 				}
 				for(var i = 0; i < scope.total_param_rows; i++){
 					updateSelectedParameter(i);
 				}
-			}	
-		});	
+			}
+		});
 
-		//Store default data in memory and update values 
-		
+		//Store default data in memory and update values
+
 		bngApi.engineLua(scope.extension_name + '.initValues()', function(data) {
 			updateUIValues();
 			onResizeEvent();
-		});	
-		
+		});
+
 		onResizeEvent();
 	}
 
@@ -211,7 +214,7 @@ link: function (scope, element, attrs) {
 	function showParamModifiers(height) {
 		var init_height = 205;
 		var row_height = 35;
-		
+
 		var table = document.getElementById("tableBody");
 
 		//Initially, there are 4 rows (3 + 1 param_modifier row)
@@ -233,93 +236,69 @@ link: function (scope, element, attrs) {
 			scope.show_param_modifier_rows[i] = true;
 		}
     }
-	
+
 	//Apply parameter value
 	function setSurfaceParameter(index){
 		var surface = scope.surface_options.surface;
 		var param = scope.parameter_options_arr[index].param;
-		var value = scope.input_arr[index];	
-			
+		var value = scope.input_arr[index];
+
 		if(param == "skidMarks"){
 			//Convert 0/1 into boolean value
-			value = value == 1;		
+			value = value == 1;
 		}
 
-		bngApi.engineLua(scope.extension_name + '.setSurfaceParameter("' + surface + '","' + param +'",' + value + ')');	
+		bngApi.engineLua(scope.extension_name + '.setSurfaceParameter("' + surface + '","' + param +'",' + value + ')');
 	}
 
 	//Update the UI values
 	function updateUIValue(index){
 		var surface = scope.surface_options.surface;
-		var param = scope.parameter_options_arr[index].param;			
-		
+		var param = scope.parameter_options_arr[index].param;
+
 		bngApi.engineLua(scope.extension_name + '.getSurfaceParameter("' + surface + '","' + param +'")', function(data) {
 			var value = Math.round((data + Number.EPSILON) * 100) / 100;
 
 			scope.input_arr[index] = value;
-			
+
 			checkForDuplicateSelectedParameters();
-		});		
-
-		//Update tooltip
-		for(var j = 0; j < UI_TEXT.parameter_tooltips.length; j++){
-			var tooltip = UI_TEXT.parameter_tooltips[j];
-			
-			if(param == tooltip.param){
-				scope.tooltip_arr[index] = tooltip.txt;
-				
-				break;
-			}
-		}	
-
-		//Update range of input values allowed
-		for(var j = 0; j < UI_TEXT.parameter_minmaxinc.length; j++){
-			var parameter_minmaxinc = UI_TEXT.parameter_minmaxinc[j];
-			
-			if(param == parameter_minmaxinc.param){
-				scope.parameter_minmaxinc_arr[index].min = parameter_minmaxinc.min;
-				scope.parameter_minmaxinc_arr[index].max = parameter_minmaxinc.max;
-				scope.parameter_minmaxinc_arr[index].inc = parameter_minmaxinc.inc;
-
-				break;
-			}
-		}
+		});
 	}
-	
+
 	//Update all UI values
 	function updateUIValues(){
 		//Set values to match current surface
-		
+
 		for(var i = 0; i < scope.total_param_rows; i++){
 			updateUIValue(i);
 		}
 	}
-	
+
 	//Check if 2 or more of the same parameter is selected
 	//If 2 >= then disable setting the parameter values
 	function checkForDuplicateSelectedParameters(){
 		var duplicate_found = false;
-		
+
 		for(var i = 0; i < scope.visible_param_rows; i++){
 			var compare = scope.parameter_options_arr[i].param;
-			
+
 			for(var j = 0; j < scope.visible_param_rows; j++){
 				if(i == j){
 					continue;
 				}
-				
+
 				var curr = scope.parameter_options_arr[j].param;
-				
+
 				if(curr == compare){
 					duplicate_found = true;
-					
+
 					i = 9999;
-					
+
 					break;
 				}
 			}
 		}
-		
+
 		scope.apply_button_enabled = !duplicate_found;
 	}
 
@@ -330,15 +309,15 @@ link: function (scope, element, attrs) {
 		showParamModifiers(height);
 		checkForDuplicateSelectedParameters();
 	}
-	
+
 	//When user wants to pick surface from world
 	scope.pickSurfaceFromWorld = function () {
 		bngApi.engineLua(scope.extension_name + '.getGroundModelAtVehicle()', function(data) {
 			if(data != null){
-				scope.surface_options.surface = data;	
+				scope.surface_options.surface = data;
 				scope.changedSelectedSurface();
 			}
-		});		
+		});
     };
 
 	scope.changedInput = function (index){};
@@ -346,14 +325,14 @@ link: function (scope, element, attrs) {
 	//When selecting a different surface in UI
 	scope.changedSelectedSurface = function () {
         updateUIValues();
-		
-		var curr_surface = scope.surface_options.surface;	
+
+		var curr_surface = scope.surface_options.surface;
 		bngApi.engineLua(scope.extension_name + '.setCurrentSurfaceUIValue("' + curr_surface + '")');
     };
-	
+
 	//When user selects a different parameter in UI
 	scope.changedSelectedParameter = function (index) {
-		updateUIValue(index);	
+		updateUIValue(index);
 
 		var param = scope.parameter_options_arr[index].param;
 
@@ -361,28 +340,28 @@ link: function (scope, element, attrs) {
 	};
 
 	//Modify surface parameters from user values
-	scope.applyChanges = function () {	
+	scope.applyChanges = function () {
 		if(!scope.apply_button_enabled){
 			return;
 		}
-		
-		//Set values only from visible rows	
+
+		//Set values only from visible rows
 		for(var i = 0; i < scope.visible_param_rows; i++){
 			setSurfaceParameter(i);
 		}
 
 		var surface = scope.surface_options.surface;
-		
+
 		//Apply changes
 		bngApi.engineLua(scope.extension_name + '.applyChanges("' + surface + '")');
-		
+
 		updateUIValues();
     };
 
 	//Reset specific surfaces parameters to default settings
 	scope.resetCurrentSurfaceGrip = function () {
 		var surface = scope.surface_options.surface;
-		
+
         bngApi.engineLua(scope.extension_name + '.resetSurface("' + surface + '")');
 
 		updateUIValues();
@@ -391,7 +370,7 @@ link: function (scope, element, attrs) {
 	//Reset all surfaces' parameters to default settings
 	scope.resetAllGrip = function () {
 		bngApi.engineLua(scope.extension_name + '.resetAllSurfaces()');
-		
+
 		updateUIValues();
     };
 
