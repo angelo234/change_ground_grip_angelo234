@@ -5,8 +5,8 @@
 			<tr>
 				<td>
 				<h3>
-					<md-select style="margin: 0px; color:black; background:white;" ng-model="surface_options.surface" ng-change="changedSelectedSurface()">
-						<md-option ng-value="opt.surface" ng-repeat="opt in surface_options.options">{{opt.txt}}</md-option>
+					<md-select style="margin: 0px; color:black; background:white;" ng-model="selectedSurface" ng-change="changedSelectedSurface()">
+						<md-option ng-value="opt.surface" ng-repeat="opt in surfaces">{{opt.txt}}</md-option>
 					</md-select>
 				</h3>
 				</td>
@@ -21,11 +21,11 @@
 
 			<tr ng-repeat="item in parameters">
 				<td>
-					{{param}}
+					{{item.name}}
 				</td>
 				<td>
-					<input max="{{parameters_minmaxinc[param].max}}" min="{{parameters_minmaxinc[param].min}}" step="{{parameters_minmaxinc[param].inc}}" type="number" ng-model="input_arr[0]" ng-change="changedInput(0)">
-					<md-tooltip style="margin: 0px; background:white;">Full range = ({{parameter_minmaxinc_arr[0].min}} ~ {{parameter_minmaxinc_arr[0].max}})</md-tooltip>
+					<input max="{{item.max}}" min="{{item.min}}" step="{{item.inc}}" type="number" ng-model="item.val" ng-change="changedInput(0)">
+					<md-tooltip style="margin: 0px; background:white;">Full range = ({{item.min}} ~ {{item.max}})</md-tooltip>
 				</td>
 			</tr>
 
