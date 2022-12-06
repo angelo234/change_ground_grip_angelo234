@@ -61,7 +61,6 @@ link: function (scope, element, attrs) {
 		scope.extension_name = 'scripts_change__ground__grip__angelo234_extension';
 		scope.showAllSurfaces = false;
 		scope.apply_button_enabled = true;
-		scope.input_arr = [0,0,0,0,0,0,0,0,0,0,0];
 
 		scope.surfaces = UI_TEXT.surfaces;
 		scope.selectedSurface = 'ALL_SURFACES';
@@ -134,20 +133,6 @@ link: function (scope, element, attrs) {
 			}
 		];
 
-		scope.parameter_options_arr = [
-			{param: 'staticFrictionCoefficient', 	options: UI_TEXT.parameters},
-			{param: 'slidingFrictionCoefficient', 	options: UI_TEXT.parameters},
-			{param: 'hydrodynamicFriction', 		options: UI_TEXT.parameters},
-			{param: 'stribeckVelocity', 			options: UI_TEXT.parameters},
-			{param: 'roughnessCoefficient', 		options: UI_TEXT.parameters},
-			{param: 'fluidDensity', 				options: UI_TEXT.parameters},
-			{param: 'flowConsistencyIndex', 		options: UI_TEXT.parameters},
-			{param: 'flowBehaviorIndex', 			options: UI_TEXT.parameters},
-			{param: 'dragAnisotropy', 				options: UI_TEXT.parameters},
-			{param: 'defaultDepth', 				options: UI_TEXT.parameters},
-			{param: 'skidMarks', 					options: UI_TEXT.parameters}
-		];
-
 		//when resetting UI but not map, use saved values from Lua
 		bngApi.engineLua(scope.extension_name + '.getCurrentSurfaceUIValue()', function(data) {
 			if(data != null) {
@@ -163,9 +148,10 @@ link: function (scope, element, attrs) {
 
 	//Apply parameter value
 	function setSurfaceParameter(index){
-		var surface = scope.surface_options.surface;
-		var param = scope.parameter_options_arr[index].param;
-		var value = scope.input_arr[index];
+		var surface = scope.selectedSurface;
+		var parameter = scope.parameters[index];
+		var param = parameter.param;
+		var value = parameter.val;
 
 		if(param == "skidMarks"){
 			//Convert 0/1 into boolean value
@@ -201,7 +187,7 @@ link: function (scope, element, attrs) {
 	scope.pickSurfaceFromWorld = function () {
 		bngApi.engineLua(scope.extension_name + '.getGroundModelAtVehicle()', function(data) {
 			if(data != null){
-				scope.surface_options.surface = data;
+				scope.selectedSurface = data;
 				scope.changedSelectedSurface();
 			}
 		});
@@ -212,9 +198,7 @@ link: function (scope, element, attrs) {
 	//When selecting a different surface in UI
 	scope.changedSelectedSurface = function () {
 		updateUIValues();
-
-		var curr_surface = scope.surface_options.surface;
-		bngApi.engineLua(scope.extension_name + '.setCurrentSurfaceUIValue("' + curr_surface + '")');
+		bngApi.engineLua(scope.extension_name + '.setCurrentSurfaceUIValue("' + scope.selectedSurface + '")');
   };
 
 	//Modify surface parameters from user values
@@ -228,27 +212,21 @@ link: function (scope, element, attrs) {
 			setSurfaceParameter(i);
 		}
 
-		var surface = scope.surface_options.surface;
-
 		//Apply changes
-		bngApi.engineLua(scope.extension_name + '.applyChanges("' + surface + '")');
+		bngApi.engineLua(scope.extension_name + '.applyChanges("' + scope.selectedSurface + '")');
 
 		updateUIValues();
   };
 
 	//Reset specific surfaces parameters to default settings
 	scope.resetCurrentSurfaceGrip = function () {
-		var surface = scope.surface_options.surface;
-
-        bngApi.engineLua(scope.extension_name + '.resetSurface("' + surface + '")');
-
+		bngApi.engineLua(scope.extension_name + '.resetSurface("' + scope.selectedSurface + '")');
 		updateUIValues();
   };
 
 	//Reset all surfaces' parameters to default settings
 	scope.resetAllGrip = function () {
 		bngApi.engineLua(scope.extension_name + '.resetAllSurfaces()');
-
 		updateUIValues();
   };
 

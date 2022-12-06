@@ -1,7 +1,9 @@
-<div class="bngApp" style="height: 100%; overflow:auto;">
+<div class="bngApp" style="display: flex; flex-flow: column; height: 100%;">
 	<!-- <p style="font-size:20px">Road Grip Editor</p> -->
-	<table id="table">
-		<tbody id="tableBody">
+	<!-- Help for setting up flexbox CSS https://stackoverflow.com/a/24979148 -->
+	
+	<div style="flex: 0 1 auto;">
+		<table>
 			<tr>
 				<td>
 				<h3>
@@ -18,7 +20,11 @@
 					</md-button>
 				</td>
 			</tr>
-
+		</table>
+	</div>
+	
+	<div style="flex: 1 1 auto; overflow:auto;">
+		<table>
 			<tr ng-repeat="item in parameters">
 				<td>
 					{{item.name}}
@@ -28,142 +34,12 @@
 					<md-tooltip style="margin: 0px; background:white;">Full range = ({{item.min}} ~ {{item.max}})</md-tooltip>
 				</td>
 			</tr>
-
-			<!--
-			<tr id="paramModifierRow0" ng-show="show_param_modifier_rows[0]">
-				<td>
-					<md-select style="margin: 0px; color:black; background:white;" ng-model="parameter_options_arr[0].param" ng-change="changedSelectedParameter(0)">
-						<md-option ng-value="opt.param" ng-repeat="opt in parameter_options_arr[0].options">{{opt.txt}}</md-option>
-					</md-select>
-					<md-tooltip style="margin: 0px; background:white;">{{tooltip_arr[0]}}</md-tooltip>
-				</td>
-				<td>
-					<input max="{{parameter_minmaxinc_arr[0].max}}" min="{{parameter_minmaxinc_arr[0].min}}" step="{{parameter_minmaxinc_arr[0].inc}}" type="number" ng-model="input_arr[0]" ng-change="changedInput(0)">
-					<md-tooltip style="margin: 0px; background:white;">Full range = ({{parameter_minmaxinc_arr[0].min}} ~ {{parameter_minmaxinc_arr[0].max}})</md-tooltip>
-				</td>
-			</tr>
-			<tr id="paramModifierRow1" ng-show="show_param_modifier_rows[1]">
-				<td>
-					<md-select style="margin: 0px; color:black; background:white;" ng-model="parameter_options_arr[1].param" ng-change="changedSelectedParameter(1)">
-						<md-option ng-value="opt.param" ng-repeat="opt in parameter_options_arr[1].options">{{opt.txt}}</md-option>
-					</md-select>
-					<md-tooltip style="margin: 0px; background:white;">{{tooltip_arr[1]}}</md-tooltip>
-				</td>
-				<td>
-					<input max="{{parameter_minmaxinc_arr[1].max}}" min="{{parameter_minmaxinc_arr[1].min}}" step="{{parameter_minmaxinc_arr[1].inc}}" type="number" ng-model="input_arr[1]" ng-change="changedInput(1)">
-					<md-tooltip style="margin: 0px; background:white;">Full range = ({{parameter_minmaxinc_arr[1].min}} ~ {{parameter_minmaxinc_arr[1].max}})</md-tooltip>
-				</td>
-			</tr>
-			<tr id="paramModifierRow2" ng-show="show_param_modifier_rows[2]">
-				<td>
-					<md-select style="margin: 0px; color:black; background:white;" ng-model="parameter_options_arr[2].param" ng-change="changedSelectedParameter(2)">
-						<md-option ng-value="opt.param" ng-repeat="opt in parameter_options_arr[2].options">{{opt.txt}}</md-option>
-					</md-select>
-					<md-tooltip style="margin: 0px; background:white;">{{tooltip_arr[2]}}</md-tooltip>
-				</td>
-				<td>
-					<input max="{{parameter_minmaxinc_arr[2].max}}" min="{{parameter_minmaxinc_arr[2].min}}" step="{{parameter_minmaxinc_arr[2].inc}}" type="number" ng-model="input_arr[2]" ng-change="changedInput(2)">
-					<md-tooltip style="margin: 0px; background:white;">Full range = ({{parameter_minmaxinc_arr[2].min}} ~ {{parameter_minmaxinc_arr[2].max}})</md-tooltip>
-				</td>
-			</tr>
-			<tr id="paramModifierRow3" ng-show="show_param_modifier_rows[3]">
-				<td>
-					<md-select style="margin: 0px; color:black; background:white;" ng-model="parameter_options_arr[3].param" ng-change="changedSelectedParameter(3)">
-						<md-option ng-value="opt.param" ng-repeat="opt in parameter_options_arr[3].options">{{opt.txt}}</md-option>
-					</md-select>
-					<md-tooltip style="margin: 0px; background:white;">{{tooltip_arr[3]}}</md-tooltip>
-				</td>
-				<td>
-					<input max="{{parameter_minmaxinc_arr[3].max}}" min="{{parameter_minmaxinc_arr[3].min}}" step="{{parameter_minmaxinc_arr[3].inc}}" type="number" ng-model="input_arr[3]" ng-change="changedInput(3)">
-					<md-tooltip style="margin: 0px; background:white;">Full range = ({{parameter_minmaxinc_arr[3].min}} ~ {{parameter_minmaxinc_arr[3].max}})</md-tooltip>
-				</td>
-			</tr>
-			<tr id="paramModifierRow4" ng-show="show_param_modifier_rows[4]">
-				<td>
-					<md-select style="margin: 0px; color:black; background:white;" ng-model="parameter_options_arr[4].param" ng-change="changedSelectedParameter(4)">
-						<md-option ng-value="opt.param" ng-repeat="opt in parameter_options_arr[4].options">{{opt.txt}}</md-option>
-					</md-select>
-					<md-tooltip style="margin: 0px; background:white;">{{tooltip_arr[4]}}</md-tooltip>
-				</td>
-				<td>
-					<input max="{{parameter_minmaxinc_arr[4].max}}" min="{{parameter_minmaxinc_arr[4].min}}" step="{{parameter_minmaxinc_arr[4].inc}}" type="number" ng-model="input_arr[4]" ng-change="changedInput(4)">
-					<md-tooltip style="margin: 0px; background:white;">Full range = ({{parameter_minmaxinc_arr[4].min}} ~ {{parameter_minmaxinc_arr[4].max}})</md-tooltip>
-				</td>
-			</tr>
-			<tr id="paramModifierRow5" ng-show="show_param_modifier_rows[5]">
-				<td>
-					<md-select style="margin: 0px; color:black; background:white;" ng-model="parameter_options_arr[5].param" ng-change="changedSelectedParameter(5)">
-						<md-option ng-value="opt.param" ng-repeat="opt in parameter_options_arr[5].options">{{opt.txt}}</md-option>
-					</md-select>
-					<md-tooltip style="margin: 0px; background:white;">{{tooltip_arr[5]}}</md-tooltip>
-				</td>
-				<td>
-					<input max="{{parameter_minmaxinc_arr[5].max}}" min="{{parameter_minmaxinc_arr[5].min}}" step="{{parameter_minmaxinc_arr[5].inc}}" type="number" ng-model="input_arr[5]" ng-change="changedInput(5)">
-					<md-tooltip style="margin: 0px; background:white;">Full range = ({{parameter_minmaxinc_arr[5].min}} ~ {{parameter_minmaxinc_arr[5].max}})</md-tooltip>
-				</td>
-			</tr>
-			<tr id="paramModifierRow6" ng-show="show_param_modifier_rows[6]">
-				<td>
-					<md-select style="margin: 0px; color:black; background:white;" ng-model="parameter_options_arr[6].param" ng-change="changedSelectedParameter(6)">
-						<md-option ng-value="opt.param" ng-repeat="opt in parameter_options_arr[6].options">{{opt.txt}}</md-option>
-					</md-select>
-					<md-tooltip style="margin: 0px; background:white;">{{tooltip_arr[6]}}</md-tooltip>
-				</td>
-				<td>
-					<input max="{{parameter_minmaxinc_arr[6].max}}" min="{{parameter_minmaxinc_arr[6].min}}" step="{{parameter_minmaxinc_arr[6].inc}}" type="number" ng-model="input_arr[6]" ng-change="changedInput(6)">
-					<md-tooltip style="margin: 0px; background:white;">Full range = ({{parameter_minmaxinc_arr[6].min}} ~ {{parameter_minmaxinc_arr[6].max}})</md-tooltip>
-				</td>
-			</tr>
-			<tr id="paramModifierRow7" ng-show="show_param_modifier_rows[7]">
-				<td>
-					<md-select style="margin: 0px; color:black; background:white;" ng-model="parameter_options_arr[7].param" ng-change="changedSelectedParameter(7)">
-						<md-option ng-value="opt.param" ng-repeat="opt in parameter_options_arr[7].options">{{opt.txt}}</md-option>
-					</md-select>
-					<md-tooltip style="margin: 0px; background:white;">{{tooltip_arr[7]}}</md-tooltip>
-				</td>
-				<td>
-					<input max="{{parameter_minmaxinc_arr[7].max}}" min="{{parameter_minmaxinc_arr[7].min}}" step="{{parameter_minmaxinc_arr[7].inc}}" type="number" ng-model="input_arr[7]" ng-change="changedInput(7)">
-					<md-tooltip style="margin: 0px; background:white;">Full range = ({{parameter_minmaxinc_arr[7].min}} ~ {{parameter_minmaxinc_arr[7].max}})</md-tooltip>
-				</td>
-			</tr>
-			<tr id="paramModifierRow8" ng-show="show_param_modifier_rows[8]">
-				<td>
-					<md-select style="margin: 0px; color:black; background:white;" ng-model="parameter_options_arr[8].param" ng-change="changedSelectedParameter(8)">
-						<md-option ng-value="opt.param" ng-repeat="opt in parameter_options_arr[8].options">{{opt.txt}}</md-option>
-					</md-select>
-					<md-tooltip style="margin: 0px; background:white;">{{tooltip_arr[8]}}</md-tooltip>
-				</td>
-				<td>
-					<input max="{{parameter_minmaxinc_arr[8].max}}" min="{{parameter_minmaxinc_arr[8].min}}" step="{{parameter_minmaxinc_arr[8].inc}}" type="number" ng-model="input_arr[8]" ng-change="changedInput(8)">
-					<md-tooltip style="margin: 0px; background:white;">Full range = ({{parameter_minmaxinc_arr[8].min}} ~ {{parameter_minmaxinc_arr[8].max}})</md-tooltip>
-				</td>
-			</tr>
-			<tr id="paramModifierRow9" ng-show="show_param_modifier_rows[9]">
-				<td>
-					<md-select style="margin: 0px; color:black; background:white;" ng-model="parameter_options_arr[9].param" ng-change="changedSelectedParameter(9)">
-						<md-option ng-value="opt.param" ng-repeat="opt in parameter_options_arr[9].options">{{opt.txt}}</md-option>
-					</md-select>
-					<md-tooltip style="margin: 0px; background:white;">{{tooltip_arr[9]}}</md-tooltip>
-				</td>
-				<td>
-					<input max="{{parameter_minmaxinc_arr[9].max}}" min="{{parameter_minmaxinc_arr[9].min}}" step="{{parameter_minmaxinc_arr[9].inc}}" type="number" ng-model="input_arr[9]" ng-change="changedInput(9)">
-					<md-tooltip style="margin: 0px; background:white;">Full range = ({{parameter_minmaxinc_arr[9].min}} ~ {{parameter_minmaxinc_arr[9].max}})</md-tooltip>
-				</td>
-			</tr>
-			<tr id="paramModifierRow10" ng-show="show_param_modifier_rows[10]">
-				<td>
-					<md-select style="margin: 0px; color:black; background:white;" ng-model="parameter_options_arr[10].param" ng-change="changedSelectedParameter(10)">
-						<md-option ng-value="opt.param" ng-repeat="opt in parameter_options_arr[10].options">{{opt.txt}}</md-option>
-					</md-select>
-					<md-tooltip style="margin: 0px; background:white;">{{tooltip_arr[10]}}</md-tooltip>
-				</td>
-				<td>
-					<input max="{{parameter_minmaxinc_arr[10].max}}" min="{{parameter_minmaxinc_arr[10].min}}" step="{{parameter_minmaxinc_arr[10].inc}}" type="number" ng-model="input_arr[10]" ng-change="changedInput(10)">
-					<md-tooltip style="margin: 0px; background:white;">Full range = ({{parameter_minmaxinc_arr[10].min}} ~ {{parameter_minmaxinc_arr[10].max}})</md-tooltip>
-				</td>
-			</tr>
-
-			<tr id="applyChangesRow">
+		</table>
+	</div>
+	
+	<div style="flex: 0 1 auto;">
+		<table>
+			<tr>
 				<td>
 					<md-button style="color: white; background-color: #ff6600" flex style="margin: 2px; min-width: 198px" md-no-ink class="md-raised"
 					ng-click="applyChanges()">Apply Changes
@@ -185,11 +61,7 @@
 					<md-tooltip>Resets all surfaces to default settings.</md-tooltip>
 					</md-button>
 				</td>
-
-
-
 			</tr>
-			-->
-		</tbody>
-	</table>
+		</table>
+	</div>
 </div>
