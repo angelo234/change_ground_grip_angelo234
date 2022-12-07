@@ -67,19 +67,19 @@ link: function (scope, element, attrs) {
 		scope.parameters = [
 			{
 				param: 'staticFrictionCoefficient',
-				name: 'Static Friction (μ)',
-				tooltip: "Friction during normal driving and is usually higher than sliding friction. Typical range = (0.1 ~ 2)",
+				name: 'Static Friction',
+				tooltip: "Friction during normal driving and is usually higher than sliding friction. Typical range = (0.1 ~ 1.0)",
 				min: -100, max: 50, inc: 0.01, val: 0.0
 			},
 			{
 				param: 'slidingFrictionCoefficient',
-				name: 'Sliding Friction (μ)',
-				tooltip: "Friction when tires are spinning out or locked up and is usually lower than static friction. Typical range = (0.1 ~ 1.5)",
+				name: 'Sliding Friction',
+				tooltip: "Friction when tires are spinning out or locked up and is usually lower than static friction. Typical range = (0.1 ~ 0.8)",
 				min: -10, max: 50, inc: 0.01, val: 0.0
 			},
 			{
 				param: 'hydrodynamicFriction',
-				name: 'Hydrodynamic Friction (μ)',
+				name: 'Hydrodynamic Friction',
 				tooltip: "Adds friction when sliding increases. Typical range = (0 ~ 0.1)",
 				min: -1, max: 50,	inc: 0.01, val: 0.0
 			},
@@ -193,8 +193,6 @@ link: function (scope, element, attrs) {
 		});
 	};
 
-	scope.changedInput = function (index){};
-
 	//When selecting a different surface in UI
 	scope.changedSelectedSurface = function () {
 		updateUIValues();
@@ -232,10 +230,6 @@ link: function (scope, element, attrs) {
 
 	//START
 	init();
-
-	//When the app gets resized
-	scope.$on('app:resized', function (events, args){
-	});
 
 	// Make sure we clean up after closing the app.
 	scope.$on('$destroy', function () {});
